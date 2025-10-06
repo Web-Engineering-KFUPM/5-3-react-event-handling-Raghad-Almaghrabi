@@ -2,50 +2,62 @@ import React, { useState } from "react";
 import TaskList from "./TaskList";
 
 export default function TaskApp() {
-  
-  const handleSubmit = () => {
-   
-  };
 
-  
-  const handleDelete = (id) => {
-    // TODO: filter tasks by id to remove the clicked one
-  };
+    const [text, setText] = useState("");
+    const [tasks, setTasks] = useState([]);
 
-  
-  const handleClearAll = () => {
-    // TODO: set tasks to empty array
-  };
 
-  return (
-    <section className="card">
-      {/*Controlled Input */}
-      <div className="inputRow">
-        <input
-          type="text"
-          placeholder="Type a task..."
-          className="input"
-          // TODO: value={text}
-          // TODO: onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSubmit();
-          }}
-        />
-        <button className="btn btn--primary" onClick={handleSubmit}>
-          Submit
-        </button>
-      </div>
+    const handleSubmit = () => {
 
-      {/*Render Task List and Enable Delete */}
-      {/*Pass tasks and onDelete */}
-      <TaskList /* tasks={tasks} onDelete={handleDelete} */ />
+        const trimmed = text.trim();
+        if (!trimmed) return;
+        const newTask = { id: Date.now(), text: trimmed };
+        setTasks((prev) => [...prev, newTask]);
+        setText("");
 
-      {/*Clear All */}
-      <div className="footerRow">
-        <button className="btn btn--ghost" onClick={handleClearAll}>
-          Clear All
-        </button>
-      </div>
-    </section>
-  );
+    };
+
+
+    const handleDelete = (id) => {
+        setTasks((prev) => prev.filter((task) => task.id !== id));
+    };
+
+
+    const handleClearAll = () => {
+        setTasks([]);
+
+    };
+
+    return (
+        <section className="card">
+            {/*Controlled Input */}
+            <div className="inputRow">
+                <input
+                    type="text"
+                    placeholder="Type a task..."
+                    className="input"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSubmit();
+                    }}
+
+                />
+                <button className="btn btn--primary" onClick={handleSubmit}>
+                    Submit
+                </button>
+            </div>
+
+            {/*Render Task List and Enable Delete */}
+            {/*Pass tasks and onDelete */}
+            <TaskList tasks={tasks} onDelete={handleDelete} />
+
+            {/*Clear All */}
+            <div className="footerRow">
+                <button className="btn btn--ghost" onClick={handleClearAll}>
+                    Clear All
+                </button>
+            </div>
+        </section>
+    );
 }
